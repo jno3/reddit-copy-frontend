@@ -1,7 +1,8 @@
 import { useState } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { baseURL, basePostRequest } from "./ApiRequests";
-const Login = () => {
+
+const CreateSub = () => {
     const [inputs, setInputs] = useState({});
     const navigate = useNavigate();
     const handleChange = (event) => {
@@ -11,15 +12,14 @@ const Login = () => {
     }
     const handleSubmit = (event) => {
         event.preventDefault();
-        const url = baseURL + "/authentication/login/";
-        const token = null;
-        const type = "u";
+        const url = baseURL + "/user/sub/";
+        const token = localStorage.getItem("jwt");
+        const type = "a";
         basePostRequest(url, inputs, token, type).then(
             response => {
                 if (response.status === 200) {
-                    localStorage.setItem("jwt", response.data.token);
-                    localStorage.setItem("username", response.data.username)
-                    navigate("/");
+                    const data = response.data;
+                    navigate(`/sub/${data.id}`);
                 } else {
                     alert(response.data.message);
                 }
@@ -31,22 +31,21 @@ const Login = () => {
         <div>
             <form onSubmit={handleSubmit}>
                 <label>
-                    Username:
+                    New sub's name:
                     <input
                         type="text"
-                        name="username"
-                        value={inputs.username || ""}
+                        name="name"
+                        value={inputs.name || ""}
                         onChange={handleChange}
                         required
                         minLength={8}
                     />
                 </label>
                 <label>
-                    Password:
-                    <input
-                        type="password"
-                        name="password"
-                        value={inputs.password || ""}
+                    Description:
+                    <textarea
+                        name="description"
+                        value={inputs.description || ""}
                         onChange={handleChange}
                         required
                         minLength={8}
@@ -58,4 +57,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default CreateSub;

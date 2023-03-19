@@ -1,7 +1,7 @@
 import { useState } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { baseURL, basePostRequest } from "./ApiRequests";
-const Login = () => {
+const CreateTopic = () => {
     const [inputs, setInputs] = useState({});
     const navigate = useNavigate();
     const handleChange = (event) => {
@@ -9,44 +9,36 @@ const Login = () => {
         const value = event.target.value;
         setInputs(values => ({ ...values, [name]: value }))
     }
-    const handleSubmit = (event) => {
+    const {id} = useParams();
+    const url = `${baseURL}/user/sub/${id}/`;
+    const token = localStorage.getItem("jwt");
+    const type = "a";
+    const handleSubmit = async(event) => {
         event.preventDefault();
-        const url = baseURL + "/authentication/login/";
-        const token = null;
-        const type = "u";
-        basePostRequest(url, inputs, token, type).then(
-            response => {
-                if (response.status === 200) {
-                    localStorage.setItem("jwt", response.data.token);
-                    localStorage.setItem("username", response.data.username)
-                    navigate("/");
-                } else {
-                    alert(response.data.message);
-                }
-            }
-        )
+        const response = await basePostRequest(url, inputs, token, type);
+        navigate(`/topic/${response.data.id}`);
     }
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
                 <label>
-                    Username:
+                    Title:
                     <input
                         type="text"
-                        name="username"
-                        value={inputs.username || ""}
+                        name="title"
+                        value={inputs.title || ""}
                         onChange={handleChange}
                         required
                         minLength={8}
                     />
                 </label>
                 <label>
-                    Password:
-                    <input
+                    Body:
+                    <textarea
                         type="password"
-                        name="password"
-                        value={inputs.password || ""}
+                        name="body"
+                        value={inputs.body || ""}
                         onChange={handleChange}
                         required
                         minLength={8}
@@ -58,4 +50,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default CreateTopic;
