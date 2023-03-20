@@ -24,6 +24,11 @@ export const baseGetRequest = (url, token, type) => {
                     "Authorization": `Bearer ${token}`
                 }
             }
+        ).catch(
+            err => {
+                const { response } = err;
+                return response;
+            }
         );
     } else if (type === "u") {
         return axios.get(url);

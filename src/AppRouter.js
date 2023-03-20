@@ -9,6 +9,7 @@ import Sub from "./Sub";
 import CreateTopic from "./CreateTopic";
 import Topic from "./Topic";
 import User from "./User";
+import Following from "./Following";
 
 const AppRouter = () => {
 
@@ -24,6 +25,7 @@ const AppRouter = () => {
                         <Route path="createtopic/:id" element={<CreateTopic />} />
                         <Route path="topic/:id" element={<Topic />} />
                         <Route path="user/:id" element={<User />} />
+                        <Route path="following" element={<Following />} />
                     </Route>
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
