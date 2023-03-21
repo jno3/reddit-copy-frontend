@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { baseGetRequest, baseURL } from "./ApiRequests";
-import { UserHome } from "./Templates";
+import { TopicTemplate } from "./Templates";
 
 const Home = () => {
     const [data, setData] = useState();
@@ -19,6 +19,7 @@ const Home = () => {
             if (temp.status === 500) {
                 localStorage.removeItem("jwt");
                 localStorage.removeItem("username");
+                localStorage.removeItem("id");
                 alert("session expired")
                 navigate("/");
             } else {
@@ -35,16 +36,20 @@ const Home = () => {
                 data.map(
                     topic => {
                         if (topic.topicList === undefined) {
+                            const sub = {
+                                "id": topic.subId,
+                                "name": topic.subName,
+                            }
+                            const post = topic;
                             return (
-                                <div key={topic.id}>
-                                    {topic.subName}
-                                    {topic.title}
-                                </div>
+                                <TopicTemplate sub={sub} post={post} request={false} key={topic.id} />
                             )
                         } else {
-                            if(topic.topicList.length > 0){
+                            const sub = topic;
+                            const post = sub.topicList[0];
+                            if (sub.topicList.length > 0) {
                                 return (
-                                    <UserHome data={topic} key={topic.id}/>
+                                    <TopicTemplate sub={sub} post={post} request={true} key={topic.id} />
                                 )
                             }
                         }

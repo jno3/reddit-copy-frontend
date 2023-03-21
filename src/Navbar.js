@@ -10,9 +10,10 @@ const LocalNavbar = () => {
         const token = localStorage.getItem("jwt");
         const type = "a";
         const temp = await baseGetRequest(url, token, type);
-        if (temp.status === 200) {
+        if (temp.status !== 500) {
             localStorage.removeItem("jwt");
             localStorage.removeItem("username");
+            localStorage.removeItem("id");
         }
         navigate(0);
     }

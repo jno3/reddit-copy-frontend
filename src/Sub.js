@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Card } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import { baseGetRequest, baseURL } from "./ApiRequests";
+import { SubTemplate, TopicTemplate } from "./Templates";
 
 const Sub = () => {
     const [data, setData] = useState({});
@@ -18,28 +20,31 @@ const Sub = () => {
 
 
     return (
-        <div>
+        <Card style={{ width: "40rem" }}>
             {
                 data.id &&
-                <div>
-                    <h1>{data.name}</h1>
-                    <h2>{data.description}</h2>
-                    <Link to={`/createtopic/${data.id}`}>Create topic</Link>
+                <Card.Body>
+                    <SubTemplate data={data} />
+
+                    {/* <Link to={`/createtopic/${data.id}`}>Create topic</Link> */}
                     {data.topicList.map(
                         post => {
+                            const sub = {
+                                "id": post.subId,
+                                "name": post.subName,
+                            }
+                            var request = false;
+                            if (localStorage.getItem("jwt") !== null) {
+                                request = true;
+                            }
                             return (
-                                <div key={post.id}>
-                                    <div>
-                                        <Link to={`/topic/${post.id}`}>{post.topicTitle}</Link>
-                                    {post.creatorUsername}
-                                </div>
-                                </div>
+                                <TopicTemplate sub={sub} post={post} request={request} key={post.id} />
                             )
                         }
                     )}
-        </div>
+                </Card.Body>
             }
-        </div >
+        </Card >
     )
 }
 

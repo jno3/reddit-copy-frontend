@@ -10,9 +10,19 @@ export const basePostRequest = (url, data, token, type) => {
                     "Authorization": `Bearer ${token}`
                 }
             }
+        ).catch(
+            err => {
+                const { response } = err;
+                return response;
+            }
         );
     } else if (type === "u") {
-        return axios.post(url, data);
+        return axios.post(url, data).catch(
+            err => {
+                const { response } = err;
+                return response;
+            }
+        );;
     }
 }
 
