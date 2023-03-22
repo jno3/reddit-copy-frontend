@@ -10,6 +10,7 @@ import CreateTopic from "./CreateTopic";
 import Topic from "./Topic";
 import User from "./User";
 import Following from "./Following";
+import "./general.css";
 
 const AppRouter = () => {
 

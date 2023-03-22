@@ -32,7 +32,7 @@ const Login = () => {
     }
 
     return (
-        <div>
+        <div className="general">
             <Card style={{ width: "38rem", marginTop: "1rem" }}>
                 <Card.Body>
                     <Form onSubmit={handleSubmit}>

@@ -27,10 +27,10 @@ const Home = () => {
             }
         }
         loadData();
-    }, [url, token, type])
+    }, [url, token, type, navigate])
 
     return (
-        <div>
+        <div className="general">
             {
                 data &&
                 data.map(
@@ -40,7 +40,10 @@ const Home = () => {
                                 "id": topic.subId,
                                 "name": topic.subName,
                             }
-                            const post = topic;
+                            const post = {
+                                ...topic,
+                                "topicTitle": topic.title
+                            }
                             return (
                                 <TopicTemplate sub={sub} post={post} request={false} key={topic.id} />
                             )
@@ -50,6 +53,10 @@ const Home = () => {
                             if (sub.topicList.length > 0) {
                                 return (
                                     <TopicTemplate sub={sub} post={post} request={true} key={topic.id} />
+                                )
+                            }else{
+                                return(
+                                    ""
                                 )
                             }
                         }

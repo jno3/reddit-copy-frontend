@@ -19,7 +19,7 @@ const LocalNavbar = () => {
     }
     return (
         <>
-            <Navbar bg="light" expand="lg">
+            <Navbar bg="light" expand="lg" style={{marginBottom: "1rem"}}>
                 <Container>
                     <Navbar.Brand href="/">Home</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />

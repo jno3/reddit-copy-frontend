@@ -14,15 +14,24 @@ const Topic = () => {
     var type = "u";
     var logged = false;
     if (token != null) {
+        type = "a";
         logged = true;
     }
     useEffect(() => {
         const loadData = async () => {
             const temp = await baseGetRequest(url, token, type);
-            setData(temp.data);
+            if (temp.status === 500) {
+                localStorage.removeItem("jwt");
+                localStorage.removeItem("username");
+                localStorage.removeItem("id");
+                alert("session expired")
+                navigate("/");
+            }else{
+                setData(temp.data);
+            }
         }
         loadData();
-    }, [url, token, type])
+    }, [url, token, type, navigate])
 
     const handleCommentChange = (event) => {
         const name = event.target.name;
@@ -30,9 +39,9 @@ const Topic = () => {
         setCommentData(values => ({ ...values, [name]: value }));
     }
 
-    const handleCommentSubmit = async (event) => {
+    const handleCommentSubmit = async (event, _id) => {
         event.preventDefault();
-        const url = `${baseURL}/user/post/${id}/`
+        const url = `${baseURL}/user/post/${_id}/`
         const type = "a";
         const temp = await basePostRequest(url, commentData, token, type);
         if (temp.status === 500) {
@@ -46,8 +55,17 @@ const Topic = () => {
         }
     }
 
+    const handleUnderComment = (index, isOpen) => {
+        const element = document.getElementById(`expand-comm-${index}`);
+        if (isOpen) {
+            element.style.display = "none";
+        } else {
+            element.style.display = "block";
+        }
+    }
+
     return (
-        <Card style={{ width: "40rem" }}>
+        <Card style={{ width: "40rem" }} className="general">
             <Card.Body>
                 {
                     data.id &&
@@ -80,7 +98,7 @@ const Topic = () => {
                         {
                             logged &&
                             <Form>
-                                <Form.Group className="mb-3" controlId="formBasicEmail">
+                                <Form.Group className="mb-3" controlId="formBasicText">
                                     <Form.Control
                                         as="textarea"
                                         placeholder="Add a comment..."
@@ -90,7 +108,7 @@ const Topic = () => {
                                         minLength={8}
                                     />
                                 </Form.Group>
-                                <Button variant="primary" type="submit" onClick={handleCommentSubmit}>
+                                <Button variant="primary" type="submit" onClick={(event) => handleCommentSubmit(event, data.id)}>
                                     Comment
                                 </Button>
                             </Form>
@@ -100,7 +118,7 @@ const Topic = () => {
                         {
                             data.id &&
                             data.commentList.map(
-                                comment => {
+                                (comment, index) => {
                                     return (
                                         <Card key={comment.id}>
                                             <Card.Body>
@@ -108,20 +126,40 @@ const Topic = () => {
                                                 {
                                                     logged &&
                                                     data.id &&
-                                                    <UpvoteDownvoteHandler post={comment} request={logged} />
+                                                    <>
+                                                        <UpvoteDownvoteHandler post={comment} request={logged} />
+                                                        <div style={{ float: "right" }}>
+                                                            <Button onClick={() => handleUnderComment(index, false)}>
+                                                                Comment
+                                                            </Button>
+                                                            <Button href={`/comment/${comment.id}`}>
+                                                                Expand ({comment.subCommentNumber})
+                                                            </Button>
+                                                        </div>
+                                                        <div style={{ marginTop: "3rem", display: "none" }} id={`expand-comm-${index}`}>
+                                                            <Form>
+                                                                <Form.Group className="mb-3" controlId="formBasicEmail">
+                                                                    <Form.Control
+                                                                        as="textarea"
+                                                                        placeholder="Add a comment..."
+                                                                        name="body"
+                                                                        onChange={handleCommentChange}
+                                                                        required
+                                                                        minLength={8}
+                                                                    />
+                                                                </Form.Group>
+                                                                <Button variant="primary" type="submit" onClick={(event) => handleCommentSubmit(event, comment.id)}>
+                                                                    Comment
+                                                                </Button>
+                                                                <Button variant="warning" onClick={() => handleUnderComment(index, true)}>
+                                                                    Close
+                                                                </Button>
+                                                            </Form>
+                                                        </div>
+                                                    </>
                                                 }
                                             </Card.Body>
                                         </Card>
-                                        // <div key={comment.id}>
-                                        //     <h5>{comment.commentBody}</h5>
-                                        //     <Link to={`/user/${comment.creatorId}`}>
-                                        //         {comment.creatorUsername}
-                                        //     </Link>
-                                        //     --
-                                        //     <Link to={`/comment/${comment.id}`}>
-                                        //         Expand({comment.subCommentNumber})
-                                        //     </Link>
-                                        // </div>
                                     )
                                 }
                             )

@@ -20,7 +20,7 @@ const CreateTopic = () => {
     }
 
     return (
-        <div>
+        <div className="general">
             <form onSubmit={handleSubmit}>
                 <label>
                     Title:

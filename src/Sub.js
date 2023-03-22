@@ -7,7 +7,7 @@ import { SubTemplate, TopicTemplate } from "./Templates";
 const Sub = () => {
     const [data, setData] = useState({});
     const { id } = useParams();
-    const url = baseURL + "/general/sub/" + id + "/";
+    const url = `${baseURL}/general/sub/${id}/`;
     const token = localStorage.getItem("jwt");
     const type = "u";
     useEffect(() => {
@@ -20,7 +20,7 @@ const Sub = () => {
 
 
     return (
-        <Card style={{ width: "40rem" }}>
+        <Card style={{ width: "40rem" }} className="general">
             {
                 data.id &&
                 <Card.Body>
