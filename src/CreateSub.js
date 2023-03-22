@@ -5,29 +5,26 @@ import { baseURL, basePostRequest } from "./ApiRequests";
 const CreateSub = () => {
     const [inputs, setInputs] = useState({});
     const navigate = useNavigate();
+    const token = localStorage.getItem("jwt");
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
         setInputs(values => ({ ...values, [name]: value }))
     }
-    const handleSubmit = async(event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const url = baseURL + "/authentication/login/";
-        const token = null;
-        const type = "u";
+        const url = `${baseURL}/user/sub/`;
+        const type = "a";
         const temp = await basePostRequest(url, inputs, token, type);
-        if(temp.status === 500){
-            const warning = document.getElementById("pw-alert");
-            warning.style.visibility = "visible";
-            setTimeout(() => {
-                warning.style.visibility = "hidden";
-            }, 3000);
-        }else{
-            const {data} = temp;
-            localStorage.setItem("jwt", data.token);
-            localStorage.setItem("username", data.username);
-            localStorage.setItem("id", data.userId);
+        if (temp.status === 500) {
+            localStorage.removeItem("jwt");
+            localStorage.removeItem("username");
+            localStorage.removeItem("id");
+            alert("session expired")
             navigate("/");
+        } else {
+            console.log(temp.data.id);
+            navigate(`/sub/${temp.data.id}`);
         }
     }
 
@@ -35,14 +32,15 @@ const CreateSub = () => {
         <div className="general">
             <Card style={{ width: "38rem", marginTop: "1rem" }}>
                 <Card.Body>
+                    <Card.Title>Create new sub</Card.Title>
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" controlId="formBasicText1">
-                            <Form.Label>Title</Form.Label>
+                            <Form.Label>Name</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter post title."
-                                name="title"
-                                value={inputs.username || ""}
+                                placeholder="Enter the sub's name."
+                                name="name"
+                                value={inputs.name || ""}
                                 onChange={handleChange}
                                 required
                                 minLength={8}
@@ -50,12 +48,13 @@ const CreateSub = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="formBasicText2">
-                            <Form.Label>Body</Form.Label>
+                            <Form.Label>Description</Form.Label>
                             <Form.Control
+                                as="textarea"
                                 type="text"
-                                placeholder="Enter post body."
-                                name="body"
-                                value={inputs.password || ""}
+                                placeholder="Enter the sub's description."
+                                name="description"
+                                value={inputs.description || ""}
                                 onChange={handleChange}
                                 required
                                 minLength={8}

@@ -12,7 +12,7 @@ const Login = () => {
     }
     const handleSubmit = async(event) => {
         event.preventDefault();
-        const url = baseURL + "/authentication/login/";
+        const url = `${baseURL}/authentication/login/`
         const token = null;
         const type = "u";
         const temp = await basePostRequest(url, inputs, token, type);
